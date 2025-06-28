@@ -95,21 +95,21 @@ app.post('/logIn', async (req, res) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     
     const db = client.db("Examen2UX");
-    const usuarios = db.collection("Usuarios");
+    const usuariosCollection = db.collection("Usuarios");
     const postsdb = db.collection("Posts");
 
-    // buscar usuario Mongo y posts del usuario
+    // buscar usuario de mongo y posts del usuario
     const usuario = await usuariosCollection.findOne({ firebaseId: idFirebase });
     if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado en MongoDB' });
     }
-    const postsUSER = await postsCollection.find({ authorId: usuario._id.toString() }).toArray();
+    const postsUSER = await postsdb.find({ authorId: usuario._id.toString() }).toArray();
 
     res.json({
       email: usuario.email,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
-      posts
+      postsUSER
     });
   } catch (error) {
     res.status(401).json({ mensaje: 'Credenciales inválidas', error: error.message });
